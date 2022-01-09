@@ -36,6 +36,17 @@ function App() {
   ]);
   const [search, setSearch] = useState('');
   const [searchResults, setSearchResults] = useState([]);
+  const navigate = useNavigate();  // working with Browser History
+
+  const handleDelete = (id) => {
+    /*if the id got from postPage 'is not equal' post.id while iterating posts during filtering, 
+    include it to postsList, otherwise filtering out post with id we have passed in */
+    const postsList = posts.filter(post => post.id !== id);
+    setPosts(postsList);
+    /* useNavigate to update Browser History after deleting post
+     - routed to Homepage after deleting */
+    navigate('/');
+  }
 
   return (
     <Routes>
@@ -52,9 +63,9 @@ function App() {
             postBody={null}
             setPostBody={null}
           />} />
-          <Route path=":id" element={<PostPage   /* if we provided an post id with url: '/post/id'*/
-            posts={null}
-            handleDelete={null}
+          <Route path=":id" element={<PostPage   /* if we provided a post id with url: '/post/id', goes to useParams()*/
+            posts={posts}
+            handleDelete={handleDelete}
           />} />
         </Route>
         <Route path="about" element={<About />} />
