@@ -53,19 +53,25 @@ function App() {
 ;  }, [posts, search])
 
   // submit new Post after creating - receives the event from submit button
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     // if posts exists - get the last posts - get its id and increase by 1, if not just set as 1
     const id = posts.length ? posts[posts.length - 1].id + 1 : 1;
     const datetime = format(new Date(), 'MMMM dd, yyyy pp');
     const newPost = { id, title: postTitle, datetime, body: postBody };
-    // create new array with new post added - spread all existing posts and add new one
-    const allPosts = [...posts, newPost];
-    setPosts(allPosts);  // set the prop with new value
-    // set PostTitle and PostBody in the controlled inputs back to empty string after we've submitted
-    setPostTitle(''); 
-    setPostBody('');
-    navigate('/'); // back to homepage
+    try {
+      // 'Create' - POST request to server
+      const response = await api.post('/posts', newPost);
+      // create new array with new post added - spread all existing posts and add new one, returned in response to POST request
+      const allPosts = [...posts, response.data];
+      setPosts(allPosts);  // set the prop with new value
+      // set PostTitle and PostBody in the controlled inputs back to empty string after we've submitted
+      setPostTitle(''); 
+      setPostBody('');
+      navigate('/'); // back to homepage
+    } catch (err) {
+      console.log(`Error: ${err.message}`);
+    }
   }
 
   // Deleting Post
