@@ -74,15 +74,23 @@ function App() {
     }
   }
 
+
   // Deleting Post
-  const handleDelete = (id) => {
-    /*if the id got from postPage 'is not equal' post.id while iterating posts during filtering, 
-    include it to postsList, otherwise filtering out post with id we have passed in */
-    const postsList = posts.filter(post => post.id !== id);
-    setPosts(postsList);
-    /* useNavigate to update Browser History after deleting post
-     - routed to Homepage after deleting */
-    navigate('/');
+  const handleDelete = async (id) => {
+    try {
+      // Delete axios request - by id
+      await api.delete(`/posts/${id}`);
+
+      /*if the id got from postPage 'is not equal' post.id while iterating posts during filtering, 
+      include it to postsList, otherwise filtering out post with id we have passed in */
+      const postsList = posts.filter(post => post.id !== id);
+      setPosts(postsList);
+      /* useNavigate to update Browser History after deleting post
+      - routed to Homepage after deleting */
+      navigate('/');
+    } catch (err) {
+      console.log(`Error: ${err.message}`);
+    }
   }
 
   return (
