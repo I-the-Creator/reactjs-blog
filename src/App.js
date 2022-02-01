@@ -4,6 +4,7 @@ import NewPost from './NewPost';
 import PostPage from './PostPage';
 import About from './About';
 import Missing from './Missing';
+import EditPost from './EditPost';
 import { Routes, Route, useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { format } from 'date-fns';
@@ -15,14 +16,15 @@ function App() {
   const [searchResults, setSearchResults] = useState([]);
   const [postTitle, setPostTitle] = useState('');
   const [postBody, setPostBody] = useState('');
+  const [editTitle, setEditTitle] = useState('');
+  const [editBody, setEditBody] = useState('');
   const navigate = useNavigate();  // working with Browser History
-  
+
   useEffect(() => {
     const fetchPosts = async () => {
       try {
         const response = await api.get('/posts');
         setPosts(response.data);
-        console.log(response.data);
       } catch (err) {
         if(err.response) {
         // Not in the 200 response range
@@ -68,12 +70,33 @@ function App() {
       // set PostTitle and PostBody in the controlled inputs back to empty string after we've submitted
       setPostTitle(''); 
       setPostBody('');
-      navigate('/'); // back to homepage
+      navigate('/'); // switch back to homepage
     } catch (err) {
       console.log(`Error: ${err.message}`);
     }
   }
 
+    // Updating/editing post -  PUT request
+    const handleEdit = async (id) => {
+      // get the date and time
+      const datetime = format(new Date(), 'MMMM dd, yyyy pp');
+      const updatedPost = { id, title: editTitle, datetime, body: editBody };
+      console.log(editTitle, editBody);
+      try {
+        const response = await api.put(`/posts/${id}`, updatedPost);
+        // map through all currently existing posts - create new array
+        // if post id === id of edited post  - return response.data spread (new post information)
+        // if not - post stay unchanged in new array
+        setPosts(posts.map(post => post.id === id ? { ...response.data } : post))
+        console.log(response.data);
+        setEditTitle('');
+        setEditBody('');
+        navigate('/'); // switch back to homepage
+      } catch (err) {
+        console.log(`Error: ${err.message}`);
+      }
+
+    }
 
   // Deleting Post
   const handleDelete = async (id) => {
@@ -108,16 +131,25 @@ function App() {
             postBody={postBody}
             setPostBody={setPostBody}
           />} />
-          <Route path=":id" element={<PostPage   /* if we provided a post id with url: '/post/id', goes to useParams()*/
+          <Route path=":id" element={<PostPage   /* if we provided a post 'id' with url: '/post/id', goes to useParams()*/
             posts={posts}
             handleDelete={handleDelete}
+          />} />
+        </Route>
+        <Route path="edit/:id">
+          <Route index element={<EditPost   /* renders by default inside 'edit' path */
+            posts={posts}
+            handleEdit={handleEdit}
+            editTitle={editTitle}
+            setEditTitle={setEditTitle}
+            editBody={editBody}
+            setEditBody={setEditBody}
           />} />
         </Route>
         <Route path="about" element={<About />} />
         <Route path="*" element={<Missing />} />  {/* wildcard 'catch-all' other routes - renders Missing component*/}
       </Route>
     </Routes>
-
   );
 }
 
