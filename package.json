@@ -1,6 +1,8 @@
 {
   "name": "reactjs-blog",
-  "version": "0.1.0",
+  "homepage": "/budget_app",
+  "version": "1.0.0",
+  "description": "my react budgeting application",
   "private": true,
   "dependencies": {
     "@testing-library/jest-dom": "^5.16.1",
