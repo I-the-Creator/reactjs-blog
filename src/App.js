@@ -10,6 +10,7 @@ import { useState, useEffect } from 'react';
 import { format } from 'date-fns';
 import api from './api/posts';
 
+
 function App() {
   const [posts, setPosts] = useState([]);
   const [search, setSearch] = useState('');   // search term state
@@ -19,6 +20,7 @@ function App() {
   const [editTitle, setEditTitle] = useState('');
   const [editBody, setEditBody] = useState('');
   const navigate = useNavigate();  // working with Browser History
+
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -70,7 +72,7 @@ function App() {
       // set PostTitle and PostBody in the controlled inputs back to empty string after we've submitted
       setPostTitle(''); 
       setPostBody('');
-      navigate('/'); // switch back to homepage
+      navigate(`${process.env.REACT_APP_LOCAL_PATH}/`); // switch back to homepage
     } catch (err) {
       console.log(`Error: ${err.message}`);
     }
@@ -91,7 +93,7 @@ function App() {
         console.log(response.data);
         setEditTitle('');
         setEditBody('');
-        navigate('/'); // switch back to homepage
+        navigate(`${process.env.REACT_APP_LOCAL_PATH}/`); // switch back to homepage
       } catch (err) {
         console.log(`Error: ${err.message}`);
       }
@@ -110,7 +112,7 @@ function App() {
       setPosts(postsList);
       /* useNavigate to update Browser History after deleting post
       - routed to Homepage after deleting */
-      navigate('/');
+      navigate(`${process.env.REACT_APP_LOCAL_PATH}/`);
     } catch (err) {
       console.log(`Error: ${err.message}`);
     }
@@ -118,7 +120,7 @@ function App() {
 
   return (
     <Routes>
-      <Route path="/" element={<Layout 
+      <Route path="/" element={<Layout
         search={search}
         setSearch={setSearch}
       />}>
@@ -131,7 +133,7 @@ function App() {
             postBody={postBody}
             setPostBody={setPostBody}
           />} />
-          <Route path=":id" element={<PostPage   /* if we provided a post 'id' with url: '/post/id', goes to useParams()*/
+          <Route path="/post/:id" element={<PostPage   /* if we provided a post 'id' with url: '/post/id', goes to useParams()*/
             posts={posts}
             handleDelete={handleDelete}
           />} />
