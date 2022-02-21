@@ -1,6 +1,11 @@
 import { useParams, Link } from "react-router-dom";
+import { useContext } from 'react';
+import DataContext from './context/dataContext';
 
-const PostPage = ({ posts, handleDelete }) => {
+const PostPage = () => {
+
+    const { posts, handleDelete } = useContext(DataContext);
+
     const { id } = useParams();  // get 'id' from a path URL: from App.js router for this page
     const post = posts.find(post => (post.id).toString() === id)  // get the post by id from posts array
 
