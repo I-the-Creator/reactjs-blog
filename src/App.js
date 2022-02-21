@@ -10,6 +10,7 @@ import { useState, useEffect } from "react";
 import { format } from "date-fns";
 import api from "./api/posts";
 import useAxiosFetch from "./hooks/useAxiosFetch";
+import { DataProvider } from "./context/dataContext";
 
 function App() {
   const [posts, setPosts] = useState([]);
@@ -129,65 +130,32 @@ function App() {
   };
 
   return (
-    <Routes>
-      <Route
-        path="/"
-        element={<Layout search={search} setSearch={setSearch} />}
-      >
-        <Route
-          index
-          element={
-            <Home
-              posts={searchResults}
-              fetchError={fetchError}
-              isLoading={isLoading}
+    <DataProvider>
+      <Routes>
+        <Route path="/" element={<Layout />}>
+          <Route index element={<Home />}/>
+          {/* renders by default in place of Outlet */}
+          <Route path="post">
+            <Route
+              index
+              element={
+                <NewPost /> /* renders by default inside 'post' path */
+              }
             />
-          }
-        />{" "}
-        {/* renders by default in place of Outlet */}
-        <Route path="post">
-          <Route
-            index
-            element={
-              <NewPost /* renders by default inside 'post' path */
-                handleSubmit={handleSubmit}
-                postTitle={postTitle}
-                setPostTitle={setPostTitle}
-                postBody={postBody}
-                setPostBody={setPostBody}
-              />
-            }
-          />
-          <Route
-            path="/post/:id"
-            element={
-              <PostPage /* if we provided a post 'id' with url: '/post/id', goes to useParams()*/
-                posts={posts}
-                handleDelete={handleDelete}
-              />
-            }
-          />
+            <Route
+              path="/post/:id"
+              element={
+                <PostPage /> /* if we provided a post 'id' with url: '/post/id', goes to useParams()*/
+              }
+            />
+          </Route> 
+          <Route path="edit/:id" index element={ <EditPost />} /> {/* renders by default inside 'edit' path */ }
+          <Route path="about" element={<About />} />
+          <Route path="*" element={<Missing />} />{" "}
+          {/* wildcard 'catch-all' other routes - renders Missing component*/}
         </Route>
-        <Route path="edit/:id">
-          <Route
-            index
-            element={
-              <EditPost /* renders by default inside 'edit' path */
-                posts={posts}
-                handleEdit={handleEdit}
-                editTitle={editTitle}
-                setEditTitle={setEditTitle}
-                editBody={editBody}
-                setEditBody={setEditBody}
-              />
-            }
-          />
-        </Route>
-        <Route path="about" element={<About />} />
-        <Route path="*" element={<Missing />} />{" "}
-        {/* wildcard 'catch-all' other routes - renders Missing component*/}
-      </Route>
-    </Routes>
+      </Routes>
+    </DataProvider>
   );
 }
 

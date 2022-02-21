@@ -8,7 +8,7 @@ ReactDOM.render(
   <React.StrictMode>
     <Router>
        <Routes basename={process.env.PUBLIC_URL}>
-        <Route path="budget_app/*" element={<App />} /> {/* use "/*" as we have another routes inside */}
+        <Route path="blog_app/*" element={<App />} /> {/* use "/*" as we have another routes inside */}
        </Routes>
     </Router>
   </React.StrictMode>,
