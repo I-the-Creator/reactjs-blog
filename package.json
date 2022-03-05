@@ -1,6 +1,6 @@
 {
   "name": "reactjs-blog",
-  "homepage": "/budget_app",
+  "homepage": "/blog_app",
   "version": "1.0.0",
   "description": "my react budgeting application",
   "private": true,
